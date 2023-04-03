@@ -35,11 +35,11 @@ exports.modifyBook = (req, res, next) => {
       if (book.userId != req.auth.userId) { //vérifie l'utilisateur
         res.status(401).json({ message: "Non autorisé" });
       } else {
-        const oldImage = book.imageUrl.split('/images/')[1];
-        if (oldImage) {
+        let oldImage = book.imageUrl.split('/images/')[1];
+        if (oldImage && req.file && book.imageUrl) {
           fs.unlink(`images/${oldImage}`, (error) => { //si l'image est remplacer supprime l'ancienne 
             if (error) {
-              console.log(error);
+              return res.status(500).json({ message: "Erreur survenue lors de la suppression de l'image." });
             }
           })
         }
